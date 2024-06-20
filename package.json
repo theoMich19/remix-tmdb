@@ -1,5 +1,5 @@
 {
-  "name": "remixtmdb",
+  "name": "remixTmdb-54d7",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -8,7 +8,6 @@
     "dev": "remix vite:dev",
     "dev:serve": "binode --require ./mocks -- @remix-run/serve:remix-serve ./build/server/index.js",
     "format": "prettier --write .",
-    "format:repo": "npm run format && npm run lint -- --fix",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "lingui:extract": "lingui extract --clean",
     "setup": "",
