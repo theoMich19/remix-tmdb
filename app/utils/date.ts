@@ -9,3 +9,9 @@ dayjs.extend(localizedFormat)
 const date = dayjs
 
 export { date }
+
+
+export const getFormatDate = (date: string, format = "DD/MM/YYYY") => {
+    return dayjs(date).locale("fr").format(format)
+}
+

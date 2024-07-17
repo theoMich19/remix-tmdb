@@ -13,14 +13,17 @@ type ResponseType = KyResponse
 
 const transformOptions = (options: OptionsType | undefined) => {
   if (!options) {
-    return undefined
+    return {
+      headers: {
+        Authorization: `Bearer ${process.env.API_TOKEN}`,
+      }
+    }
   }
-
   return {
     ...options,
     headers: {
       ...options.headers,
-      Authorization: `Bearer ${options.token}`,
+      Authorization: `Bearer ${options.token ?? process.env.API_TOKEN}`,
     },
   }
 }

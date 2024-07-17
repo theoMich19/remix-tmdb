@@ -1,150 +1,111 @@
-import { Trans } from "@lingui/macro"
-import type { MetaFunction } from "@remix-run/node"
-import { Form, Link } from "@remix-run/react"
-import { AuthenticityTokenInput } from "remix-utils/csrf/react"
+import "swiper/css"
+// import type { MetaFunction } from "@remix-run/node"
+import { Link } from "@remix-run/react"
+import { useTypedLoaderData } from "remix-typedjson"
 
-import DarkModePicker from "~/components/common/dark-mode-picker/dark-mode-picker"
-import { useOptionalUser } from "~/utils/user"
+import { NavBar } from "~/components/common/navigation/navbar"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "~/components/common/ui/carousel"
+import { Image } from "~/components/common/ui/image"
+import { loader } from "~/domains/media/controllers/home"
+import { MoviePopular } from "~/domains/media/types/movie"
+import { PopularSeries } from "~/domains/media/types/series"
 
-export const meta: MetaFunction = () => [{ title: "Glanum stack" }]
+// export const meta: MetaFunction = () => [{ title: "TMTB MOVIE" }]
+
+export { loader }
 
 export default function Index() {
-  const user = useOptionalUser()
+  const { resultatMovies, resultatSeries, resultatPerson } = useTypedLoaderData<typeof loader>()
 
   return (
-    <main className="relative min-h-screen sm:flex sm:items-center sm:justify-center">
-      <div className="relative sm:pb-16 sm:pt-8">
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
-            <div className="absolute inset-0">
-              <img
-                className="h-full w-full object-cover"
-                src="https://user-images.githubusercontent.com/1500684/157774694-99820c51-8165-4908-a031-34fc371ac0d6.jpg"
-                alt="Sonic Youth On Stage"
-              />
-              <div className="absolute inset-0 bg-[color:rgba(254,204,27,0.5)] mix-blend-multiply" />
-            </div>
-            <div className="relative px-4 pb-8 pt-16 sm:px-6 sm:pb-14 sm:pt-24 lg:px-8 lg:pb-20 lg:pt-32">
-              <h1 className="text-center text-6xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
-                <span className="block uppercase text-yellow-500 drop-shadow-md">
-                  Indie Stack
-                </span>
-              </h1>
-              <p className="mx-auto mt-6 max-w-lg text-center text-xl text-white sm:max-w-3xl">
-                Check the README.md file for instructions on how to get this
-                project deployed.
-              </p>
-              <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
-                {user ? (
-                  <Form action="/logout" method="post">
-                    <AuthenticityTokenInput />
-                    <button
-                      type="submit"
-                      className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-                    >
-                      Logout {user.name}
-                    </button>
-                  </Form>
-                ) : (
-                  <div className="space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0">
-                    <Link
-                      to="/sign-up"
-                      className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-                    >
-                      <Trans>Sign up</Trans>
+    <main className="w-full h-full gap-8 sm:items-center sm:justify-center bg-black text-white overflow-scroll bg-galaxy bg-cover bg-center m-0 space-y-4">
+      <NavBar />
+      <section className="w-full space-y-4">
+        <h2 className="bg-gradient-galaxy text-white font-bold py-2 px-4 rounded w-fit my-0  mx-auto md:ml-32">
+          Film populaire
+        </h2>
+        <div className="w-full md:max-w-[90vw] mx-auto">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {resultatMovies.results.map((item: MoviePopular) => {
+                return (
+                  <CarouselItem
+                    key={item.id}
+                    className="md:basis-1/2 lg:basis-1/5 lg:pl-8 hover:opacity-80 hover:scale-110 transition-all duration-300 ease-in-out"
+                  >
+                    <Link to={`movie/${item.id}`}>
+                      <Image
+                        src={`https://image.tmdb.org/t/p/original/${item.poster_path}`}
+                        alt=""
+                        className=""
+                      />
                     </Link>
-                    <Link
-                      to="/sign-in"
-                      className="flex items-center justify-center rounded-md bg-yellow-500 px-4 py-3 font-medium text-white hover:bg-yellow-600"
-                    >
-                      <Trans>Sign in</Trans>
+                  </CarouselItem>
+                )
+              })}
+            </CarouselContent>
+          </Carousel>
+        </div>
+      </section>
+      <section className="w-full space-y-4">
+        <h2 className="bg-gradient-galaxy text-white font-bold py-2 px-4 rounded w-fit my-0  mx-auto md:ml-32">
+          Series populaire
+        </h2>
+        <div className="flex flex-row gap-4 w-full md:max-w-[90vw] mx-auto">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {resultatSeries.results.map((item: PopularSeries) => {
+                return (
+                  <CarouselItem
+                    key={item.id}
+                    className="md:basis-1/2 lg:basis-1/5 lg:pl-8 hover:opacity-80 hover:scale-110 transition-all duration-300 ease-in-out"
+                  >
+                    <Link to={`series/${item.id}`}>
+                      <Image
+                        src={`https://image.tmdb.org/t/p/original/${item.poster_path}`}
+                        alt=""
+                        className=""
+                      />
                     </Link>
-                  </div>
-                )}
-              </div>
-              <div className="mt-8 flex justify-center">
-                <div className="bg-background rounded p-1">
-                  <DarkModePicker />
-                </div>
-              </div>
-              <a href="https://remix.run">
-                <img
-                  src="https://user-images.githubusercontent.com/1500684/158298926-e45dafff-3544-4b69-96d6-d3bcc33fc76a.svg"
-                  alt="Remix"
-                  className="mx-auto mt-16 w-full max-w-[12rem] md:max-w-[16rem]"
-                />
-              </a>
-            </div>
-          </div>
+                  </CarouselItem>
+                )
+              })}
+            </CarouselContent>
+          </Carousel>
         </div>
-
-        <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
-          <div className="mt-6 flex flex-wrap justify-center gap-8">
-            {[
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157764276-a516a239-e377-4a20-b44a-0ac7b65c8c14.svg",
-                alt: "Tailwind",
-                href: "https://tailwindcss.com",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157764454-48ac8c71-a2a9-4b5e-b19c-edef8b8953d6.svg",
-                alt: "Cypress",
-                href: "https://www.cypress.io",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772386-75444196-0604-4340-af28-53b236faa182.svg",
-                alt: "MSW",
-                href: "https://mswjs.io",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772447-00fccdce-9d12-46a3-8bb4-fac612cdc949.svg",
-                alt: "Vitest",
-                href: "https://vitest.dev",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772662-92b0dd3a-453f-4d18-b8be-9fa6efde52cf.png",
-                alt: "Testing Library",
-                href: "https://testing-library.com",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772934-ce0a943d-e9d0-40f8-97f3-f464c0811643.svg",
-                alt: "Prettier",
-                href: "https://prettier.io",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772990-3968ff7c-b551-4c55-a25c-046a32709a8e.svg",
-                alt: "ESLint",
-                href: "https://eslint.org",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157773063-20a0ed64-b9f8-4e0b-9d1e-0b65a3d4a6db.svg",
-                alt: "TypeScript",
-                href: "https://typescriptlang.org",
-              },
-              {
-                src: "",
-                alt: "Conform",
-                href: "https://conform.guide/",
-              },
-              {
-                src: "https://lingui.dev/img/logo-small.svg",
-                alt: "Lingui",
-                href: "https://lingui.dev",
-              },
-            ].map((img) => (
-              <a
-                key={img.href}
-                href={img.href}
-                className="flex h-16 w-32 justify-center p-1 grayscale transition hover:grayscale-0 focus:grayscale-0"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img alt={img.alt} src={img.src} className="object-contain" />
-              </a>
-            ))}
-          </div>
+      </section>
+      <section className="w-full space-y-4">
+        <h2 className="bg-gradient-galaxy text-white font-bold py-2 px-4 rounded w-fit my-0  mx-auto md:ml-32">
+          Personalité populaire
+        </h2>
+        <div className="flex flex-row gap-4 w-full md:max-w-[90vw] mx-auto">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {resultatPerson.results.map((item) => {
+                return (
+                  <CarouselItem
+                    key={item.id}
+                    className="md:basis-1/2 lg:basis-1/5 lg:pl-8 hover:opacity-80 hover:scale-110 transition-all duration-300 ease-in-out"
+                  >
+                    <Link to={`person/${item.id}`} className="flex flex-col">
+                      <Image
+                        src={`https://image.tmdb.org/t/p/original/${item.profile_path}`}
+                        alt=""
+                        className=""
+                      />
+                      <span className="w-full text-center bg-black rounded-b-lg">{item.name}</span>
+                    </Link>
+                  </CarouselItem>
+                )
+              })}
+            </CarouselContent>
+          </Carousel>
         </div>
-      </div>
+      </section>
     </main>
   )
 }

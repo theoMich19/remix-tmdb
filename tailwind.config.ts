@@ -18,6 +18,10 @@ const config = {
       },
     },
     extend: {
+      backgroundImage: {
+        'galaxy': "url('./assets/bg.webp')",
+        'gradient-galaxy': 'linear-gradient(90deg, #3b0764, #c048b8, #00008b)',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
